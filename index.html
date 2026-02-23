@@ -1,39 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>School Absentee Form</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      margin-top: 40px;
-    }
-    input {
-      padding: 8px;
-      margin: 5px;
-      width: 250px;
-    }
-    button {
-      padding: 10px 20px;
-      background: green;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-
-<h2>School Absentee Form</h2>
-
-<input type="text" id="school" placeholder="School Name"><br>
-<input type="text" id="teacher" placeholder="Teacher Name"><br>
-<input type="number" id="present" placeholder="Present Days"><br>
-<input type="number" id="absent" placeholder="Absent Days"><br><br>
-
-<button onclick="generatePDF()">Download PDF</button>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
 <script>
 function generatePDF() {
@@ -45,18 +11,29 @@ function generatePDF() {
   let present = document.getElementById("present").value;
   let absent = document.getElementById("absent").value;
 
-  doc.setFontSize(16);
-  doc.text("School Absentee Report", 20, 20);
+  // Heading
+  doc.setFontSize(14);
+  doc.text("कार्यालय – प्रखंड शिक्षा पदाधिकारी, BAHADURPUR", 20, 15);
+  doc.text("शिक्षक उपस्थिति प्रतिवेदन", 60, 25);
 
-  doc.setFontSize(12);
-  doc.text("School Name: " + school, 20, 40);
-  doc.text("Teacher Name: " + teacher, 20, 50);
-  doc.text("Present Days: " + present, 20, 60);
-  doc.text("Absent Days: " + absent, 20, 70);
+  doc.setFontSize(11);
+  doc.text("विद्यालय का नाम: " + school, 20, 35);
+  doc.text("माह: FEB-2025", 150, 35);
 
-  doc.save("Absentee_Report.pdf");
+  // Table
+  doc.autoTable({
+    startY: 45,
+    head: [['क्रमांक','शिक्षक का नाम','उपस्थित दिन','अनुपस्थित दिन']],
+    body: [
+      ['1', teacher, present, absent]
+    ],
+  });
+
+  // Signature
+  let finalY = doc.lastAutoTable.finalY + 20;
+  doc.text("प्रमाणित किया जाता है कि उपरोक्त विवरण सत्य है।", 20, finalY);
+  doc.text("प्रधान शिक्षक हस्ताक्षर: ____________________", 20, finalY + 20);
+
+  doc.save("School_Absentee_Report.pdf");
 }
 </script>
-
-</body>
-</html>
